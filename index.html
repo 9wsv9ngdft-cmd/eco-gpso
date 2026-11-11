@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -10,25 +11,53 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--forest:#173d32;--green:#2f7656;--mint:#e8f2eb;--paper:#f5f7f4;--ink:#17251e;--muted:#68766e;--line:#dce5de;--white:#fff}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 header{background:var(--forest);color:white;padding:22px 18px 24px;border-radius:0 0 22px 22px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:800;letter-spacing:.12em;font-size:13px}.tag{border:1px solid #ffffff55;border-radius:99px;padding:5px 10px;font-size:11px}
-h1{font-size:25px;line-height:1.12;margin:22px 0 6px}header p{color:#d3e4d9;margin:0;font-size:13px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-weight:800;letter-spacing:.12em;font-size:13px}
+.tag{border:1px solid #ffffff55;border-radius:99px;padding:5px 10px;font-size:11px}
+h1{font-size:25px;line-height:1.12;margin:22px 0 6px}
+header p{color:#d3e4d9;margin:0;font-size:13px}
 main{max-width:1100px;margin:auto;padding:16px 14px 36px}
-.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 14px}.tabs button{border:1px solid var(--line);background:white;color:var(--ink);border-radius:99px;padding:9px 14px;white-space:nowrap;font-weight:650}.tabs button.active{background:var(--forest);color:white;border-color:var(--forest)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}.metric{font-size:27px;font-weight:800;letter-spacing:-.04em;margin:7px 0 0}.small{font-size:12px;color:var(--muted)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}.card h2{font-size:16px;margin:0 0 9px}.wide{grid-column:1/-1}
-#map{height:55vh;min-height:360px;border-radius:16px;border:1px solid var(--line);z-index:1}.map-wrap{position:relative}.map-note{font-size:12px;color:var(--muted);margin:8px 2px 0}
-select,input{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:white;color:var(--ink);width:100%}.filters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 14px}
+.tabs button{border:1px solid var(--line);background:white;color:var(--ink);border-radius:99px;padding:9px 14px;white-space:nowrap;font-weight:650}
+.tabs button.active{background:var(--forest);color:white;border-color:var(--forest)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}
+.metric{font-size:27px;font-weight:800;letter-spacing:-.04em;margin:7px 0 0}
+.small{font-size:12px;color:var(--muted)}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.card h2{font-size:16px;margin:0 0 9px}
+.wide{grid-column:1/-1}
+#map{height:55vh;min-height:360px;border-radius:16px;border:1px solid var(--line);z-index:1}
+.map-wrap{position:relative}
+.map-note{font-size:12px;color:var(--muted);margin:8px 2px 0}
+select,input{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:white;color:var(--ink);width:100%}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
 button.primary{background:var(--green);color:white;border:0;border-radius:10px;padding:11px 14px;font-weight:700}
 .status{padding:10px 12px;border-radius:10px;background:var(--mint);font-size:12px;color:#28533e;margin:10px 0}
-.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.list{display:grid;gap:8px}.item{padding:10px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
-footer{color:var(--muted);font-size:11px;padding:24px 3px;text-align:center}a{color:var(--green)}.hidden{display:none!important}
-@media(min-width:760px){main{padding:24px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}#map{height:650px}.wide{grid-column:span 2}}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.list{display:grid;gap:8px}
+.item{padding:10px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+footer{color:var(--muted);font-size:11px;padding:24px 3px;text-align:center}
+a{color:var(--green)}
+.hidden{display:none!important}
+@media(min-width:760px){
+ main{padding:24px}
+ .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #map{height:650px}
+ .wide{grid-column:span 2}
+}
 </style>
 </head>
 <body>
 <header>
- <div class="top"><div class="brand">ÉCOGPSO</div><div class="tag">BÊTA · INSEE 92040</div></div>
+ <div class="top">
+  <div class="brand">ÉCOGPSO</div>
+  <div class="tag">BÊTA · INSEE 92040</div>
+ </div>
  <h1>Observatoire écologique<br>Issy-les-Moulineaux</h1>
  <p>Les données publiques de l'environnement à l'échelle de GPSO.</p>
 </header>
@@ -43,20 +72,54 @@ footer{color:var(--muted);font-size:11px;padding:24px 3px;text-align:center}a{co
  <section id="dashboard">
   <div class="status" id="status">Connexion aux sources publiques…</div>
   <div class="grid">
-   <article class="card"><div class="eyebrow">Patrimoine arboré</div><div class="metric" id="trees">—</div><div class="small">arbres recensés à Issy dans le jeu GPSO</div></article>
-   <article class="card"><div class="eyebrow">Biodiversité participative</div><div class="metric" id="species">—</div><div class="small">observations GPSO (jeu territorial)</div></article>
-   <article class="card"><div class="eyebrow">Parcs & jardins</div><div class="metric" id="parks">—</div><div class="small">enregistrements localisés à Issy</div></article>
-   <article class="card"><div class="eyebrow">Communes comparées</div><div class="metric">8</div><div class="small">territoire GPSO</div></article>
-   <article class="card wide"><h2>Premiers indicateurs</h2><div class="small">Les volumes ci-dessus sont des nombres d'enregistrements dans les jeux de données, pas des mesures exhaustives de biodiversité ou de qualité écologique. Les autres indicateurs seront ajoutés après validation de leurs sources, millésimes et unités.</div></article>
-   <article class="card wide"><h2>Dernières actualisations connues</h2><div id="updated" class="small">Lecture des métadonnées des sources en cours.</div></article>
+   <article class="card">
+    <div class="eyebrow">Patrimoine arboré</div>
+    <div class="metric" id="trees">—</div>
+    <div class="small">arbres recensés à Issy dans le jeu GPSO</div>
+   </article>
+   <article class="card">
+    <div class="eyebrow">Biodiversité participative</div>
+    <div class="metric" id="species">—</div>
+    <div class="small">observations GPSO (jeu territorial)</div>
+   </article>
+   <article class="card">
+    <div class="eyebrow">Parcs & jardins</div>
+    <div class="metric" id="parks">—</div>
+    <div class="small">enregistrements localisés à Issy</div>
+   </article>
+   <article class="card">
+    <div class="eyebrow">Communes comparées</div>
+    <div class="metric">8</div>
+    <div class="small">territoire GPSO</div>
+   </article>
+   <article class="card wide">
+    <h2>Premiers indicateurs</h2>
+    <div class="small">Les volumes ci-dessus sont des nombres d'enregistrements dans les jeux de données, pas des mesures exhaustives de biodiversité ou de qualité écologique. Les autres indicateurs seront ajoutés après validation de leurs sources, millésimes et unités.</div>
+   </article>
+   <article class="card wide">
+    <h2>Dernières actualisations connues</h2>
+    <div id="updated" class="small">Lecture des métadonnées des sources en cours.</div>
+   </article>
   </div>
  </section>
 
  <section id="mapview" class="hidden">
-  <div class="row"><div><h2>Carte environnementale</h2><div class="small">Arbres GPSO et observations naturalistes.</div></div><button class="primary" id="reloadMap">Actualiser</button></div>
+  <div class="row">
+   <div>
+    <h2>Carte environnementale</h2>
+    <div class="small">Arbres GPSO et observations naturalistes.</div>
+   </div>
+   <button class="primary" id="reloadMap">Actualiser</button>
+  </div>
   <div class="filters">
-   <select id="cityFilter" aria-label="Commune"><option value="ISSY-LES-MOULINEAUX">Issy-les-Moulineaux</option><option value="all">Toutes les communes GPSO</option></select>
-   <select id="layerFilter" aria-label="Couche"><option value="trees">Arbres</option><option value="observations">Faune & flore participatives</option></select>
+   <select id="cityFilter" aria-label="Commune">
+    <option value="ISSY-LES-MOULINEAUX">Issy-les-Moulineaux</option>
+    <option value="all">Toutes les communes GPSO</option>
+   </select>
+   <select id="layerFilter" aria-label="Couche">
+    <option value="trees">Arbres</option>
+    <option value="observations">Faune & flore participatives</option>
+   </select>
   </div>
   <div class="map-wrap"><div id="map"></div></div>
   <p class="map-note"><b>Identification parcellaire active :</b> touchez la carte pour interroger l'API Carto IGN. La parcelle correspondante est alors surlignée et sa référence cadastrale affichée. Les arbres et observations restent localisés selon leurs coordonnées source ; leur rattachement automatique à une parcelle sera ajouté à l'étape suivante.</p>
@@ -64,12 +127,22 @@ footer{color:var(--muted);font-size:11px;padding:24px 3px;text-align:center}a{co
 
  <section id="compare" class="hidden">
   <h2>Comparer les communes GPSO</h2>
-  <p class="small">Les 8 communes membres du territoire. La comparaison chiffrée est activée progressivement à mesure que chaque jeu est harmonisé (même définition, millésime et unité).</p>
+  <p class="small">Les 8 communes membres du territoire. Les volumes sont des comptages issus des jeux publics ; ils ne constituent pas à eux seuls une mesure de qualité écologique.</p>
   <div class="card">
    <div class="eyebrow">Communes du territoire</div>
    <div id="communes" class="list" style="margin-top:8px">Chargement…</div>
   </div>
-  <div class="card" style="margin-top:10px"><h2>Indicateur de comparaison prêt</h2><p class="small">Patrimoine arboré GPSO : comptage par commune à partir du jeu <code>arbres-v2</code>. Les arbres gérés par GPSO ne représentent pas nécessairement tous les arbres privés ou publics du territoire.</p><div id="treeCompare" class="list">Chargement…</div></div>
+  <div class="card" style="margin-top:10px">
+   <h2>Indicateur écologique</h2>
+   <label class="small" for="indicatorSelect">Choisir l'indicateur</label>
+   <select id="indicatorSelect" style="margin:7px 0 10px">
+    <option value="trees">Arbres gérés par GPSO</option>
+    <option value="observations">Observations faune & flore</option>
+   </select>
+   <p id="indicatorDescription" class="small">Nombre d'arbres recensés et gérés par GPSO dans chaque commune.</p>
+   <div id="treeCompare" class="list">Chargement…</div>
+   <p class="small" style="margin-top:10px">Les observations participatives ne constituent pas un inventaire exhaustif de la biodiversité. Les volumes ne sont pas directement comparables entre indicateurs.</p>
+  </div>
  </section>
 
  <section id="sources" class="hidden">
@@ -86,45 +159,214 @@ footer{color:var(--muted);font-size:11px;padding:24px 3px;text-align:center}a{co
  </section>
  <footer>ÉcoGPSO · prototype indépendant · Sources publiques attribuées à leurs producteurs · Données susceptibles d'évoluer.</footer>
 </main>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const ODS='https://data.seineouest.fr/api/explore/v2.1/catalog/datasets/';
 const ISSY='https://data.issy.com/api/explore/v2.1/catalog/datasets/';
-const datasets={trees:'arbres-v2',observations:'data-obs-dded-participatif',parks:'les-parcs-et-jardins-a-issy-les-moulineaux'};
-const communes=['Boulogne-Billancourt','Chaville','Issy-les-Moulineaux','Marnes-la-Coquette','Meudon','Sèvres','Vanves',"Ville-d'Avray"];
+const datasets={
+ trees:'arbres-v2',
+ observations:'data-obs-dded-participatif',
+ parks:'les-parcs-et-jardins-a-issy-les-moulineaux'
+};
+const communes=[
+ 'Boulogne-Billancourt',
+ 'Chaville',
+ 'Issy-les-Moulineaux',
+ 'Marnes-la-Coquette',
+ 'Meudon',
+ 'Sèvres',
+ 'Vanves',
+ "Ville-d'Avray"
+];
 let map,treeLayer,obsLayer,parcelLayer,treeFeatures=[],obsFeatures=[];
 const $=id=>document.getElementById(id);
 function setStatus(s){$('status').textContent=s}
-async function getJSON(url){const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status+' sur '+url);return r.json()}
-function apiRecords(base,dataset,params={}){const q=new URLSearchParams({limit:'100',...params});return getJSON(base+encodeURIComponent(dataset)+'/records?'+q)}
-function pointOf(f){const p=f.geo_point_2d||f.geometry?.coordinates||f.geo_point; if(Array.isArray(p))return [Number(p[0]),Number(p[1])];if(p&&p.lat!==undefined)return [Number(p.lon),Number(p.lat)];return null}
-function communeOf(f){return String(f.commune||f.COMMUNE||f.nom_commune||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-function treePopup(f){return `<b>${f.vernaculaire||f.VERNACULAIRE||'Arbre'}</b><br>${f.genespvar||f.GENESPVAR||''}<br>${f.site||f.SITE||''}<br><small>${f.id_arbre||f.ID_ARBRE||''}</small>`}
-function initMap(){if(map)return;map=L.map('map').setView([48.823,2.26],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);treeLayer=L.layerGroup().addTo(map);obsLayer=L.layerGroup();parcelLayer=L.geoJSON(null,{style:{color:'#b56b25',weight:3,fillColor:'#e5ad62',fillOpacity:.22}}).addTo(map);
-map.on('click', async e=>{await selectParcel(e.latlng);});}
+async function getJSON(url){
+ const r=await fetch(url);
+ if(!r.ok)throw new Error('HTTP '+r.status+' sur '+url);
+ return r.json();
+}
+function apiRecords(base,dataset,params={}){
+ const q=new URLSearchParams({limit:'100',...params});
+ return getJSON(base+encodeURIComponent(dataset)+'/records?'+q);
+}
+function pointOf(f){
+ const p=f.geo_point_2d||f.geometry?.coordinates||f.geo_point;
+ if(Array.isArray(p))return [Number(p[0]),Number(p[1])];
+ if(p&&p.lat!==undefined)return [Number(p.lon),Number(p.lat)];
+ return null;
+}
+function communeOf(f){
+ return String(f.commune||f.COMMUNE||f.nom_commune||'')
+ .toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function treePopup(f){
+ return `<b>${f.vernaculaire||f.VERNACULAIRE||'Arbre'}</b><br>${f.genespvar||f.GENESPVAR||''}<br>${f.site||f.SITE||''}<br><small>${f.id_arbre||f.ID_ARBRE||''}</small>`;
+}
+function initMap(){
+ if(map)return;
+ map=L.map('map').setView([48.823,2.26],14);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'&copy; OpenStreetMap contributors',
+  maxZoom:19
+ }).addTo(map);
+ treeLayer=L.layerGroup().addTo(map);
+ obsLayer=L.layerGroup();
+ parcelLayer=L.geoJSON(null,{
+  style:{color:'#b56b25',weight:3,fillColor:'#e5ad62',fillOpacity:.22}
+ }).addTo(map);
+ map.on('click',async e=>{await selectParcel(e.latlng)});
+}
 async function selectParcel(latlng){
  parcelLayer.clearLayers();
  const geom={type:'Point',coordinates:[latlng.lng,latlng.lat]};
  const url='https://apicarto.ign.fr/api/cadastre/parcelle?geom='+encodeURIComponent(JSON.stringify(geom));
  try{
-  const fc=await getJSON(url);const feature=fc.features?.[0];
-  if(!feature){L.popup().setLatLng(latlng).setContent('Aucune parcelle renvoyée à cet endroit.').openOn(map);return;}
+  const fc=await getJSON(url);
+  const feature=fc.features?.[0];
+  if(!feature){
+   L.popup().setLatLng(latlng).setContent('Aucune parcelle renvoyée à cet endroit.').openOn(map);
+   return;
+  }
   parcelLayer.addData(feature);
   const a=feature.properties||{};
   const ref=a.idu||a.IDU||a.parcelle||'Référence non fournie';
   const section=a.section||'—',numero=a.numero||'—',surface=a.contenance||a.surface||'—';
   const popup=`<b>Parcelle cadastrale</b><br>Référence : ${ref}<br>Section : ${section}<br>Numéro : ${numero}<br>Contenance : ${surface}<br><small>Source : API Carto IGN · Parcellaire Express</small>`;
   L.popup().setLatLng(latlng).setContent(popup).openOn(map);
- }catch(err){L.popup().setLatLng(latlng).setContent('Interrogation cadastrale indisponible : '+err.message).openOn(map);}
+ }catch(err){
+  L.popup().setLatLng(latlng).setContent('Interrogation cadastrale indisponible : '+err.message).openOn(map);
+ }
 }
-function drawMap(){initMap();treeLayer.clearLayers();obsLayer.clearLayers();const city=$('cityFilter').value,layer=$('layerFilter').value;const source=layer==='trees'?treeFeatures:obsFeatures;source.forEach(f=>{if(city!=='all'&&communeOf(f)!==city)return;const p=pointOf(f);if(!p||p.length!==2||!Number.isFinite(p[0])||!Number.isFinite(p[1]))return;const marker=L.circleMarker([p[1],p[0]],{radius:layer==='trees'?4:5,color:layer==='trees'?'#24734e':'#bd6b2b',fillOpacity:.7,weight:1});marker.bindPopup(layer==='trees'?treePopup(f):`<b>${f.nom_espece||f.espece||f.taxon||'Observation'}</b><br>${f.date_observation||f.date||''}`);marker.addTo(layer==='trees'?treeLayer:obsLayer)});if(layer==='trees')treeLayer.addTo(map);else obsLayer.addTo(map);setTimeout(()=>map.invalidateSize(),100)}
-async function loadTrees(){const data=await apiRecords(ODS,datasets.trees,{where:"commune='ISSY-LES-MOULINEAUX'",limit:'100'});treeFeatures=data.results||[];$('trees').textContent=(data.total_count??treeFeatures.length).toLocaleString('fr-FR');return data}
-async function loadObservations(){const data=await apiRecords(ODS,datasets.observations,{limit:'100'});obsFeatures=data.results||[];$('species').textContent=(data.total_count??obsFeatures.length).toLocaleString('fr-FR');return data}
-async function loadParks(){const data=await apiRecords(ISSY,datasets.parks,{limit:'100'});$('parks').textContent=(data.total_count??data.results?.length??'—').toLocaleString('fr-FR');return data}
-async function loadComparison(){const data=await apiRecords(ODS,datasets.trees,{select:'commune,count(*) as total',group_by:'commune',limit:'100'});const rows=data.results||[];$('treeCompare').innerHTML=rows.sort((a,b)=>(b.total||0)-(a.total||0)).map(r=>`<div class="row item"><span>${r.commune||'Commune'}</span><b>${Number(r.total||0).toLocaleString('fr-FR')}</b></div>`).join('')||'Aucun résultat agrégé';$('communes').innerHTML=communes.map(c=>`<div class="item">${c}</div>`).join('')}
-async function boot(){const outcomes=await Promise.allSettled([loadTrees(),loadObservations(),loadParks(),loadComparison()]);const failed=outcomes.filter(x=>x.status==='rejected');$('updated').textContent='Données interrogées à l’ouverture de cette page. Consultez les fiches sources pour les dates de mise à jour.';setStatus(failed.length?`${4-failed.length}/4 sources interrogées avec succès. Une source peut être momentanément indisponible ou avoir changé de schéma.`:'Sources interrogées avec succès. Les valeurs sont celles retournées par les API au chargement.');if(map)drawMap()}
-document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['dashboard','mapview','compare','sources'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='mapview'){initMap();drawMap()}}));
-$('reloadMap').addEventListener('click',()=>boot().then(drawMap));$('cityFilter').addEventListener('change',drawMap);$('layerFilter').addEventListener('change',drawMap);
+
+function drawMap(){
+ initMap();
+ treeLayer.clearLayers();
+ obsLayer.clearLayers();
+ const city=$('cityFilter').value;
+ const layer=$('layerFilter').value;
+ const source=layer==='trees'?treeFeatures:obsFeatures;
+ source.forEach(f=>{
+  if(city!=='all'&&communeOf(f)!==city)return;
+  const p=pointOf(f);
+  if(!p||p.length!==2||!Number.isFinite(p[0])||!Number.isFinite(p[1]))return;
+  const marker=L.circleMarker([p[1],p[0]],{
+   radius:layer==='trees'?4:5,
+   color:layer==='trees'?'#24734e':'#bd6b2b',
+   fillOpacity:.7,
+   weight:1
+  });
+  marker.bindPopup(layer==='trees'
+   ?treePopup(f)
+   :`<b>${f.nom_espece||f.espece||f.taxon||'Observation'}</b><br>${f.date_observation||f.date||''}`
+  );
+  marker.addTo(layer==='trees'?treeLayer:obsLayer);
+ });
+ if(layer==='trees')treeLayer.addTo(map);
+ else obsLayer.addTo(map);
+ setTimeout(()=>map.invalidateSize(),100);
+}
+async function loadTrees(){
+ const data=await apiRecords(ODS,datasets.trees,{
+  where:"commune='ISSY-LES-MOULINEAUX'",
+  limit:'100'
+ });
+ treeFeatures=data.results||[];
+ $('trees').textContent=(data.total_count??treeFeatures.length).toLocaleString('fr-FR');
+ return data;
+}
+async function loadObservations(){
+ const data=await apiRecords(ODS,datasets.observations,{limit:'100'});
+ obsFeatures=data.results||[];
+ $('species').textContent=(data.total_count??obsFeatures.length).toLocaleString('fr-FR');
+ return data;
+}
+async function loadParks(){
+ const data=await apiRecords(ISSY,datasets.parks,{limit:'100'});
+ $('parks').textContent=(data.total_count??data.results?.length??'—').toLocaleString('fr-FR');
+ return data;
+}
+function normalizeName(value){
+ return String(value||'').toUpperCase()
+ .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+ .replace(/['’]/g,'-').replace(/[^A-Z0-9-]/g,'');
+}
+async function loadComparison(){
+ const indicator=$('indicatorSelect').value;
+ const isTrees=indicator==='trees';
+ const dataset=isTrees?datasets.trees:datasets.observations;
+
+ $('indicatorDescription').textContent=isTrees
+  ?"Nombre d'arbres recensés et gérés par GPSO dans chaque commune."
+  :"Nombre de signalements naturalistes participatifs enregistrés dans chaque commune GPSO. Ce n'est pas un inventaire exhaustif.";
+
+ $('treeCompare').textContent='Chargement…';
+
+ try{
+  const data=await apiRecords(ODS,dataset,{
+   select:'commune,count(*) as total',
+   group_by:'commune',
+   limit:'100'
+  });
+
+  const rows=data.results||[];
+  const byName=new Map(rows.map(r=>[
+   normalizeName(r.commune),
+   Number(r.total||0)
+  ]));
+
+  const ordered=communes.map(name=>({
+   name,
+   total:byName.has(normalizeName(name))
+    ?byName.get(normalizeName(name))
+    :null
+  }));
+
+  $('treeCompare').innerHTML=ordered.map(r=>
+   `<div class="row item"><span>${r.name}</span><b>${r.total===null?'Non renseigné':r.total.toLocaleString('fr-FR')}</b></div>`
+  ).join('');
+
+ }catch(error){
+  $('treeCompare').textContent='Comparaison indisponible : le regroupement par commune n’est pas disponible dans ce jeu de données ('+error.message+').';
+ }
+
+ $('communes').innerHTML=communes.map(c=>`<div class="item">${c}</div>`).join('');
+}
+async function boot(){
+ const outcomes=await Promise.allSettled([
+  loadTrees(),
+  loadObservations(),
+  loadParks(),
+  loadComparison()
+ ]);
+ const failed=outcomes.filter(x=>x.status==='rejected');
+ $('updated').textContent='Données interrogées à l’ouverture de cette page. Consultez les fiches sources pour les dates de mise à jour.';
+ setStatus(failed.length
+  ?`${4-failed.length}/4 sources interrogées avec succès. Une source peut être momentanément indisponible ou avoir changé de schéma.`
+  :'Sources interrogées avec succès. Les valeurs sont celles retournées par les API au chargement.'
+ );
+ if(map)drawMap();
+}
+document.querySelectorAll('[data-tab]').forEach(b=>
+ b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-tab]').forEach(x=>
+   x.classList.toggle('active',x===b)
+  );
+  ['dashboard','mapview','compare','sources'].forEach(id=>
+   $(id).classList.toggle('hidden',id!==b.dataset.tab)
+  );
+  if(b.dataset.tab==='mapview'){
+   initMap();
+   drawMap();
+  }
+ })
+);
+$('reloadMap').addEventListener('click',()=>boot().then(drawMap));
+$('cityFilter').addEventListener('change',drawMap);
+$('layerFilter').addEventListener('change',drawMap);
+$('indicatorSelect').addEventListener('change',loadComparison);
 boot().catch(e=>setStatus('Erreur de chargement : '+e.message));
 </script>
-</body></html>
+</body>
+</html>
