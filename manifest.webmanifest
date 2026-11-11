@@ -1,0 +1,10 @@
+{
+  "name": "ÉcoGPSO — Observatoire écologique",
+  "short_name": "ÉcoGPSO",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f4",
+  "theme_color": "#173d32",
+  "lang": "fr",
+  "description": "Observatoire écologique des communes de Grand Paris Seine Ouest"
+}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173d32">
+<title>ÉcoGPSO — Observatoire écologique</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--forest:#173d32;--green:#2f7656;--mint:#e8f2eb;--paper:#f5f7f4;--ink:#17251e;--muted:#68766e;--line:#dce5de;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:var(--forest);color:white;padding:22px 18px 24px;border-radius:0 0 22px 22px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:800;letter-spacing:.12em;font-size:13px}.tag{border:1px solid #ffffff55;border-radius:99px;padding:5px 10px;font-size:11px}
+h1{font-size:25px;line-height:1.12;margin:22px 0 6px}header p{color:#d3e4d9;margin:0;font-size:13px}
+main{max-width:1100px;margin:auto;padding:16px 14px 36px}
+.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 14px}.tabs button{border:1px solid var(--line);background:white;color:var(--ink);border-radius:99px;padding:9px 14px;white-space:nowrap;font-weight:650}.tabs button.active{background:var(--forest);color:white;border-color:var(--forest)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}.metric{font-size:27px;font-weight:800;letter-spacing:-.04em;margin:7px 0 0}.small{font-size:12px;color:var(--muted)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}.card h2{font-size:16px;margin:0 0 9px}.wide{grid-column:1/-1}
+#map{height:55vh;min-height:360px;border-radius:16px;border:1px solid var(--line);z-index:1}.map-wrap{position:relative}.map-note{font-size:12px;color:var(--muted);margin:8px 2px 0}
+select,input{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:white;color:var(--ink);width:100%}.filters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+button.primary{background:var(--green);color:white;border:0;border-radius:10px;padding:11px 14px;font-weight:700}
+.status{padding:10px 12px;border-radius:10px;background:var(--mint);font-size:12px;color:#28533e;margin:10px 0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.list{display:grid;gap:8px}.item{padding:10px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+footer{color:var(--muted);font-size:11px;padding:24px 3px;text-align:center}a{color:var(--green)}.hidden{display:none!important}
+@media(min-width:760px){main{padding:24px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}#map{height:650px}.wide{grid-column:span 2}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><div class="brand">ÉCOGPSO</div><div class="tag">BÊTA · INSEE 92040</div></div>
+ <h1>Observatoire écologique<br>Issy-les-Moulineaux</h1>
+ <p>Les données publiques de l'environnement à l'échelle de GPSO.</p>
+</header>
+<main>
+ <nav class="tabs" aria-label="Navigation">
+  <button class="active" data-tab="dashboard">Synthèse</button>
+  <button data-tab="mapview">Carte</button>
+  <button data-tab="compare">Comparer GPSO</button>
+  <button data-tab="sources">Sources & méthode</button>
+ </nav>
+
+ <section id="dashboard">
+  <div class="status" id="status">Connexion aux sources publiques…</div>
+  <div class="grid">
+   <article class="card"><div class="eyebrow">Patrimoine arboré</div><div class="metric" id="trees">—</div><div class="small">arbres recensés à Issy dans le jeu GPSO</div></article>
+   <article class="card"><div class="eyebrow">Biodiversité participative</div><div class="metric" id="species">—</div><div class="small">observations GPSO (jeu territorial)</div></article>
+   <article class="card"><div class="eyebrow">Parcs & jardins</div><div class="metric" id="parks">—</div><div class="small">enregistrements localisés à Issy</div></article>
+   <article class="card"><div class="eyebrow">Communes comparées</div><div class="metric">8</div><div class="small">territoire GPSO</div></article>
+   <article class="card wide"><h2>Premiers indicateurs</h2><div class="small">Les volumes ci-dessus sont des nombres d'enregistrements dans les jeux de données, pas des mesures exhaustives de biodiversité ou de qualité écologique. Les autres indicateurs seront ajoutés après validation de leurs sources, millésimes et unités.</div></article>
+   <article class="card wide"><h2>Dernières actualisations connues</h2><div id="updated" class="small">Lecture des métadonnées des sources en cours.</div></article>
+  </div>
+ </section>
+
+ <section id="mapview" class="hidden">
+  <div class="row"><div><h2>Carte environnementale</h2><div class="small">Arbres GPSO et observations naturalistes.</div></div><button class="primary" id="reloadMap">Actualiser</button></div>
+  <div class="filters">
+   <select id="cityFilter" aria-label="Commune"><option value="ISSY-LES-MOULINEAUX">Issy-les-Moulineaux</option><option value="all">Toutes les communes GPSO</option></select>
+   <select id="layerFilter" aria-label="Couche"><option value="trees">Arbres</option><option value="observations">Faune & flore participatives</option></select>
+  </div>
+  <div class="map-wrap"><div id="map"></div></div>
+  <p class="map-note"><b>Identification parcellaire active :</b> touchez la carte pour interroger l'API Carto IGN. La parcelle correspondante est alors surlignée et sa référence cadastrale affichée. Les arbres et observations restent localisés selon leurs coordonnées source ; leur rattachement automatique à une parcelle sera ajouté à l'étape suivante.</p>
+ </section>
+
+ <section id="compare" class="hidden">
+  <h2>Comparer les communes GPSO</h2>
+  <p class="small">Les 8 communes membres du territoire. La comparaison chiffrée est activée progressivement à mesure que chaque jeu est harmonisé (même définition, millésime et unité).</p>
+  <div class="card">
+   <div class="eyebrow">Communes du territoire</div>
+   <div id="communes" class="list" style="margin-top:8px">Chargement…</div>
+  </div>
+  <div class="card" style="margin-top:10px"><h2>Indicateur de comparaison prêt</h2><p class="small">Patrimoine arboré GPSO : comptage par commune à partir du jeu <code>arbres-v2</code>. Les arbres gérés par GPSO ne représentent pas nécessairement tous les arbres privés ou publics du territoire.</p><div id="treeCompare" class="list">Chargement…</div></div>
+ </section>
+
+ <section id="sources" class="hidden">
+  <h2>Sources, API & limites</h2>
+  <div class="list">
+   <div class="item"><b>Arbres GPSO — arbres-v2</b><br><a href="https://data.seineouest.fr/explore/dataset/arbres-v2/" target="_blank" rel="noreferrer">Fiche du jeu de données</a><br><span class="small">Localisation des arbres gérés par GPSO, actualisation continue annoncée.</span></div>
+   <div class="item"><b>Observatoires participatifs faune/flore</b><br><a href="https://data.seineouest.fr/explore/dataset/data-obs-dded-participatif/" target="_blank" rel="noreferrer">Fiche du jeu de données</a><br><span class="small">Observations citoyennes géolocalisées ; actualisation quotidienne annoncée.</span></div>
+   <div class="item"><b>Parcs, jardins et squares d'Issy</b><br><a href="https://data.issy.com/explore/dataset/les-parcs-et-jardins-a-issy-les-moulineaux/" target="_blank" rel="noreferrer">Fiche Data Issy</a></div>
+   <div class="item"><b>Cadastre & parcelles — IGN API Carto</b><br><a href="https://apicarto.ign.fr/api/doc/cadastre" target="_blank" rel="noreferrer">Documentation du module Cadastre</a><br><span class="small">Les requêtes parcellaires nécessitent une géométrie d'intersection ; pagination requise. Les limites de parcelles ne sont pas une donnée environnementale.</span></div>
+   <div class="item"><b>Risques — Géorisques</b><br><a href="https://www.georisques.gouv.fr/acceder-la-carte-interactive-aux-bases-de-donnees-et-lapi" target="_blank" rel="noreferrer">Documentation API</a><br><span class="small">Certaines API v2 nécessitent un jeton ; ne jamais exposer un jeton privé dans le code front-end.</span></div>
+   <div class="item"><b>INSEE — données locales</b><br><a href="https://www.insee.fr/fr/information/8184146" target="_blank" rel="noreferrer">Catalogue des API</a></div>
+  </div>
+  <div class="status">Échelle parcellaire : dans cette version, les arbres et observations sont affichés à leurs coordonnées source. L'affectation à une parcelle nécessite une jointure spatiale avec les polygones cadastraux. Aucune pollution, température ou donnée de consommation n'est interpolée artificiellement.</div>
+ </section>
+ <footer>ÉcoGPSO · prototype indépendant · Sources publiques attribuées à leurs producteurs · Données susceptibles d'évoluer.</footer>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const ODS='https://data.seineouest.fr/api/explore/v2.1/catalog/datasets/';
+const ISSY='https://data.issy.com/api/explore/v2.1/catalog/datasets/';
+const datasets={trees:'arbres-v2',observations:'data-obs-dded-participatif',parks:'les-parcs-et-jardins-a-issy-les-moulineaux'};
+const communes=['Boulogne-Billancourt','Chaville','Issy-les-Moulineaux','Marnes-la-Coquette','Meudon','Sèvres','Vanves',"Ville-d'Avray"];
+let map,treeLayer,obsLayer,parcelLayer,treeFeatures=[],obsFeatures=[];
+const $=id=>document.getElementById(id);
+function setStatus(s){$('status').textContent=s}
+async function getJSON(url){const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status+' sur '+url);return r.json()}
+function apiRecords(base,dataset,params={}){const q=new URLSearchParams({limit:'100',...params});return getJSON(base+encodeURIComponent(dataset)+'/records?'+q)}
+function pointOf(f){const p=f.geo_point_2d||f.geometry?.coordinates||f.geo_point; if(Array.isArray(p))return [Number(p[0]),Number(p[1])];if(p&&p.lat!==undefined)return [Number(p.lon),Number(p.lat)];return null}
+function communeOf(f){return String(f.commune||f.COMMUNE||f.nom_commune||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function treePopup(f){return `<b>${f.vernaculaire||f.VERNACULAIRE||'Arbre'}</b><br>${f.genespvar||f.GENESPVAR||''}<br>${f.site||f.SITE||''}<br><small>${f.id_arbre||f.ID_ARBRE||''}</small>`}
+function initMap(){if(map)return;map=L.map('map').setView([48.823,2.26],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);treeLayer=L.layerGroup().addTo(map);obsLayer=L.layerGroup();parcelLayer=L.geoJSON(null,{style:{color:'#b56b25',weight:3,fillColor:'#e5ad62',fillOpacity:.22}}).addTo(map);
+map.on('click', async e=>{await selectParcel(e.latlng);});}
+async function selectParcel(latlng){
+ parcelLayer.clearLayers();
+ const geom={type:'Point',coordinates:[latlng.lng,latlng.lat]};
+ const url='https://apicarto.ign.fr/api/cadastre/parcelle?geom='+encodeURIComponent(JSON.stringify(geom));
+ try{
+  const fc=await getJSON(url);const feature=fc.features?.[0];
+  if(!feature){L.popup().setLatLng(latlng).setContent('Aucune parcelle renvoyée à cet endroit.').openOn(map);return;}
+  parcelLayer.addData(feature);
+  const a=feature.properties||{};
+  const ref=a.idu||a.IDU||a.parcelle||'Référence non fournie';
+  const section=a.section||'—',numero=a.numero||'—',surface=a.contenance||a.surface||'—';
+  const popup=`<b>Parcelle cadastrale</b><br>Référence : ${ref}<br>Section : ${section}<br>Numéro : ${numero}<br>Contenance : ${surface}<br><small>Source : API Carto IGN · Parcellaire Express</small>`;
+  L.popup().setLatLng(latlng).setContent(popup).openOn(map);
+ }catch(err){L.popup().setLatLng(latlng).setContent('Interrogation cadastrale indisponible : '+err.message).openOn(map);}
+}
+function drawMap(){initMap();treeLayer.clearLayers();obsLayer.clearLayers();const city=$('cityFilter').value,layer=$('layerFilter').value;const source=layer==='trees'?treeFeatures:obsFeatures;source.forEach(f=>{if(city!=='all'&&communeOf(f)!==city)return;const p=pointOf(f);if(!p||p.length!==2||!Number.isFinite(p[0])||!Number.isFinite(p[1]))return;const marker=L.circleMarker([p[1],p[0]],{radius:layer==='trees'?4:5,color:layer==='trees'?'#24734e':'#bd6b2b',fillOpacity:.7,weight:1});marker.bindPopup(layer==='trees'?treePopup(f):`<b>${f.nom_espece||f.espece||f.taxon||'Observation'}</b><br>${f.date_observation||f.date||''}`);marker.addTo(layer==='trees'?treeLayer:obsLayer)});if(layer==='trees')treeLayer.addTo(map);else obsLayer.addTo(map);setTimeout(()=>map.invalidateSize(),100)}
+async function loadTrees(){const data=await apiRecords(ODS,datasets.trees,{where:"commune='ISSY-LES-MOULINEAUX'",limit:'100'});treeFeatures=data.results||[];$('trees').textContent=(data.total_count??treeFeatures.length).toLocaleString('fr-FR');return data}
+async function loadObservations(){const data=await apiRecords(ODS,datasets.observations,{limit:'100'});obsFeatures=data.results||[];$('species').textContent=(data.total_count??obsFeatures.length).toLocaleString('fr-FR');return data}
+async function loadParks(){const data=await apiRecords(ISSY,datasets.parks,{limit:'100'});$('parks').textContent=(data.total_count??data.results?.length??'—').toLocaleString('fr-FR');return data}
+async function loadComparison(){const data=await apiRecords(ODS,datasets.trees,{select:'commune,count(*) as total',group_by:'commune',limit:'100'});const rows=data.results||[];$('treeCompare').innerHTML=rows.sort((a,b)=>(b.total||0)-(a.total||0)).map(r=>`<div class="row item"><span>${r.commune||'Commune'}</span><b>${Number(r.total||0).toLocaleString('fr-FR')}</b></div>`).join('')||'Aucun résultat agrégé';$('communes').innerHTML=communes.map(c=>`<div class="item">${c}</div>`).join('')}
+async function boot(){const outcomes=await Promise.allSettled([loadTrees(),loadObservations(),loadParks(),loadComparison()]);const failed=outcomes.filter(x=>x.status==='rejected');$('updated').textContent='Données interrogées à l’ouverture de cette page. Consultez les fiches sources pour les dates de mise à jour.';setStatus(failed.length?`${4-failed.length}/4 sources interrogées avec succès. Une source peut être momentanément indisponible ou avoir changé de schéma.`:'Sources interrogées avec succès. Les valeurs sont celles retournées par les API au chargement.');if(map)drawMap()}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['dashboard','mapview','compare','sources'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='mapview'){initMap();drawMap()}}));
+$('reloadMap').addEventListener('click',()=>boot().then(drawMap));$('cityFilter').addEventListener('change',drawMap);$('layerFilter').addEventListener('change',drawMap);
+boot().catch(e=>setStatus('Erreur de chargement : '+e.message));
+</script>
+</body></html>
