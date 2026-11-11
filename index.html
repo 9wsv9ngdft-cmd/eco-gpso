@@ -137,7 +137,8 @@ a{color:var(--green)}
    <label class="small" for="indicatorSelect">Choisir l'indicateur</label>
    <select id="indicatorSelect" style="margin:7px 0 10px">
     <option value="trees">Arbres gérés par GPSO</option>
-    <option value="observations">Observations faune & flore</option>
+    <option value="observations">Signalements faune & flore</option>
+    <option value="individuals">Individus observés (somme déclarée)</option>
    </select>
    <p id="indicatorDescription" class="small">Nombre d'arbres recensés et gérés par GPSO dans chaque commune.</p>
    <div id="treeCompare" class="list">Chargement…</div>
@@ -295,42 +296,41 @@ function normalizeName(value){
 async function loadComparison(){
  const indicator=$('indicatorSelect').value;
  const isTrees=indicator==='trees';
+ const isIndividuals=indicator==='individuals';
  const dataset=isTrees?datasets.trees:datasets.observations;
-
- $('indicatorDescription').textContent=isTrees
-  ?"Nombre d'arbres recensés et gérés par GPSO dans chaque commune."
-  :"Nombre de signalements naturalistes participatifs enregistrés dans chaque commune GPSO. Ce n'est pas un inventaire exhaustif.";
-
- $('treeCompare').textContent='Chargement…';
-
+ const label=isTrees
+  ?"Nombre d'arbres recensés et gérés par GPSO."
+  :isIndividuals
+   ?"Somme des nombres d'individus déclarés dans les observations GPSO. Ce chiffre dépend des déclarations citoyennes."
+   :"Nombre de signalements naturalistes participatifs GPSO. Un signalement n'est pas nécessairement un individu.";
+ $('indicatorDescription').textContent=label;
+ $('treeCompare').textContent='Chargement des données GPSO…';
  try{
-  const data=await apiRecords(ODS,dataset,{
-   select:'commune,count(*) as total',
+  const params={
+   select:isIndividuals?'commune,sum(nb_individus) as total':'commune,count(*) as total',
    group_by:'commune',
    limit:'100'
-  });
-
+  };
+  if(!isTrees)params.where="gpso='OUI'";
+  const data=await apiRecords(ODS,dataset,params);
   const rows=data.results||[];
   const byName=new Map(rows.map(r=>[
    normalizeName(r.commune),
    Number(r.total||0)
   ]));
-
   const ordered=communes.map(name=>({
    name,
    total:byName.has(normalizeName(name))
     ?byName.get(normalizeName(name))
-    :null
+    :0
   }));
-
   $('treeCompare').innerHTML=ordered.map(r=>
-   `<div class="row item"><span>${r.name}</span><b>${r.total===null?'Non renseigné':r.total.toLocaleString('fr-FR')}</b></div>`
+   `<div class="row item"><span>${r.name}</span><b>${r.total.toLocaleString('fr-FR')}</b></div>`
   ).join('');
-
+  if(!rows.length)$('treeCompare').textContent='Aucun enregistrement retourné par la source.';
  }catch(error){
-  $('treeCompare').textContent='Comparaison indisponible : le regroupement par commune n’est pas disponible dans ce jeu de données ('+error.message+').';
+  $('treeCompare').textContent='Comparaison indisponible : '+error.message;
  }
-
  $('communes').innerHTML=communes.map(c=>`<div class="item">${c}</div>`).join('');
 }
 async function boot(){
